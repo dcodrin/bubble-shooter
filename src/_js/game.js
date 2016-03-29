@@ -1,20 +1,32 @@
+import BubbleShoot from './BubbleShoot.js';
+
+
 import jQuery from 'jquery';
 import ui from './ui.js';
 import Bubble from './bubble.js';
 import Board from './board.js';
 import CollisionDetector from './collision-detector.js';
 import Kaboom from './jquery.kaboom.js';
+import Renderer from './renderer.js';
+import Sprite from './sprite.js';
 
 
-//Create a namespace to protect the variables from naming collisions and to minimize global variables.
-const BubbleShoot = window.BubbleShoot || {};
+
 
 //BubbleShoot.ui is an IIFE that returns an object with multiple methods
 BubbleShoot.ui = ui;
+BubbleShoot.Board = Board;
+
 //BubbleShoot.Bubble returns a constructor Object
 BubbleShoot.Bubble = Bubble;
-BubbleShoot.Board = Board;
+
+//FOR CANVAS USAGE. COMMENT OUT TO RENDER WITH HTML
+BubbleShoot.Renderer = Renderer;
+BubbleShoot.Sprite = Sprite;
+
+
 BubbleShoot.CollisionDetector = CollisionDetector;
+
 
 //BubbleShoot.Game is an IIFE that returns a constructor Object.
 BubbleShoot.Game = (function ($) {
@@ -23,22 +35,37 @@ BubbleShoot.Game = (function ($) {
         let curBubble,
             board,
             numBubbles,
-            coords;
+            coords,
+            bubbles = [],
+            requestAnimationID;
         const MAX_BUBBLES = 50;
 
         //init is a public method
         this.init = function () {
-            $('.btn_start_game').bind('click', startGame);
+
+            if (BubbleShoot.Renderer) {
+                BubbleShoot.Renderer.init(function () {
+                    $('.btn_start_game').bind('click', startGame);
+                })
+            } else {
+                $('.btn_start_game').bind('click', startGame);
+            }
         };
         //startGame is a private method that is available to us through the principle of 'closure'
         const startGame = function () {
             $('.btn_start_game').unbind('click');
             numBubbles = MAX_BUBBLES;
             BubbleShoot.ui.hideDialog();
-            curBubble = getNextBubble();
-
             board = new BubbleShoot.Board();
-            BubbleShoot.ui.drawBoard(board);
+            bubbles = board.getBubbles();
+            if(BubbleShoot.Renderer){
+                if(!requestAnimationID){
+                    requestAnimationID = setTimeout(renderFrame, 40);
+                }
+            } else {
+                BubbleShoot.ui.drawBoard(board);
+            }
+            curBubble = getNextBubble(board);
             //clickGameScreen will determine the direction of the shooting bubble.
             $('#game').bind('click', clickGameScreen);
         };
@@ -46,7 +73,18 @@ BubbleShoot.Game = (function ($) {
             //createBubble returns a new Bubble Object
             //the getSprite() method allows us to reference the DOM object
             const bubble = BubbleShoot.Bubble.createBubble();
+            bubbles.push(bubble);
+            bubble.setState(BubbleShoot.BubbleState.CURRENT);
             bubble.getSprite().addClass('cur_bubble');
+
+            let
+                top = 470,
+                left = ($('#board').width() - BubbleShoot.ui.BUBBLE_DIMS) / 2;
+            bubble.getSprite().css({
+                top: top,
+                left: left
+            });
+
             $('#board').append(bubble.getSprite());
             BubbleShoot.ui.drawBubblesRemaining(numBubbles);
             numBubbles -= 1;
@@ -89,27 +127,36 @@ BubbleShoot.Game = (function ($) {
             curBubble = getNextBubble();
         };
         const dropBubbles = function (bubbles, delay) {
-          $.each(bubbles, function () {
-              const bubble = this;
-              board.popBubblesAt(bubble.getRow(), bubble.getCol());
+            $.each(bubbles, function () {
+                const bubble = this;
+                board.popBubblesAt(bubble.getRow(), bubble.getCol());
+                setTimeout(function () {
+                    bubble.setState(BubbleShoot.BubbleState.FALLING);
+                    bubble.getSprite().kaboom({
+                        callback: function () {
+                            bubble.getSprite().remove();
+                            bubble.setState(BubbleShoot.BubbleState.FALLEN);
+                        }
+                    });
+                }, delay);
 
-              setTimeout(function () {
-                  bubble.getSprite().kaboom();
-              },delay);
-
-              //Simple animation example
-              //setTimeout(function () {
-              //    bubble.getSprite().animate({
-              //        top: 1000
-              //    }, 1000);
-              //}, delay)
-          })
+                //Simple animation example
+                //setTimeout(function () {
+                //    bubble.getSprite().animate({
+                //        top: 1000
+                //    }, 1000);
+                //}, delay)
+            })
         };
         const popBubbles = function (bubbles, delay) {
             $.each(bubbles, function () {
                 const bubble = this;
                 setTimeout(function () {
+                    bubble.setState(BubbleShoot.BubbleState.POPPING);
                     bubble.animatePop();
+                    setTimeout(function () {
+                        bubble.setState(BubbleShoot.BubbleState.POPPED);
+                    }, 200)
                 }, delay);
                 board.popBubblesAt(this.getRow(), this.getCol());
                 setTimeout(function () {
@@ -117,6 +164,16 @@ BubbleShoot.Game = (function ($) {
                 }, delay + 200);
                 delay += 60;
             })
+        };
+
+        const renderFrame = function () {
+            $.each(bubbles, function () {
+               if(this.getSprite().updateFrame){
+                   this.getSprite().updateFrame();
+               }
+            });
+            BubbleShoot.Renderer.render(bubbles);
+            requestAnimationID = setTimeout(renderFrame, 40);
         }
 
     };
@@ -127,6 +184,3 @@ jQuery(function () {
     const game = new BubbleShoot.Game();
     game.init();
 });
-
-
-export default BubbleShoot;

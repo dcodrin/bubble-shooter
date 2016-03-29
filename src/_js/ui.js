@@ -1,4 +1,5 @@
 import jQuery from 'jquery';
+import BubbleShoot from './BubbleShoot.js';
 
 const ui = (function ($) {
     const ui = {
@@ -34,20 +35,25 @@ const ui = (function ($) {
         },
         fireBubble: function (bubble, coords, duration) {
 
+            bubble.setState(BubbleShoot.BubbleState.FIRING);
+
             const complete = function () {
-              if(bubble.getRow() !== null){
-                  bubble.getSprite().css('transition', '');
-                  bubble.getSprite().css({
-                      left: bubble.getCoords().left - ui.BUBBLE_DIMS/2,
-                      top: bubble.getCoords().top - ui.BUBBLE_DIMS/2
-                  })
-              }
+                if (bubble.getRow() !== null) {
+                    bubble.getSprite().css('transition', '');
+                    bubble.getSprite().css({
+                        left: bubble.getCoords().left - ui.BUBBLE_DIMS / 2,
+                        top: bubble.getCoords().top - ui.BUBBLE_DIMS / 2
+                    });
+                    bubble.setState(BubbleShoot.BubbleState.ON_BOARD);
+                } else {
+                  bubble.setState(BubbleShoot.BubbleState.FIRED);
+                }
             };
 
-            bubble.getSprite().css(`transition`, `all ${duration/1000}s linear`);
+            bubble.getSprite().css(`transition`, `all ${duration / 1000}s linear`);
             bubble.getSprite().css({
-               left: coords.x - ui.BUBBLE_DIMS/2,
-                top: coords.y - ui.BUBBLE_DIMS/2
+                left: coords.x - ui.BUBBLE_DIMS / 2,
+                top: coords.y - ui.BUBBLE_DIMS / 2
             });
             setTimeout(complete, duration);
 

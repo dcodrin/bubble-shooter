@@ -1,5 +1,5 @@
 import jQuery from 'jquery';
-import BubbleShoot from './game.js';
+import BubbleShoot from './BubbleShoot.js';
 
 const Board = (function ($) {
     const NUM_ROWS = 9,
@@ -7,6 +7,20 @@ const Board = (function ($) {
         NUM_COLS = 32;
     const Board = function () {
         const that = this;
+
+        this.getBubbles = function () {
+            let bubbles = [];
+            const rows = this.getRows();
+            rows.forEach(function (row, i) {
+                row.forEach(function (bubble, j) {
+                    if (bubble) {
+                        bubbles.push(bubble);
+                    }
+                });
+            });
+            return bubbles;
+        };
+
         const rows = createLayout();
         this.getRows = function () {
             return rows;
@@ -132,6 +146,16 @@ const Board = (function ($) {
             //j is incremented by 2 to account for the offset
             for (j = startCol; j < NUM_COLS; j += 2) {
                 const bubble = BubbleShoot.Bubble.createBubble(i, j);
+                bubble.setState(BubbleShoot.BubbleState.ON_BOARD);
+                if (BubbleShoot.Renderer) {
+                    const
+                        left = j * BubbleShoot.ui.BUBBLE_DIMS / 2,
+                        top = i * BubbleShoot.ui.ROW_HEIGHT;
+                    bubble.getSprite().setPosition({
+                        left: left,
+                        top: top
+                    });
+                }
                 row[j] = bubble;
             }
             rows.push(row);

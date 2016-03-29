@@ -93,5 +93,8 @@ body {
       cursor: pointer;
       background-color: #ba0020;
       transform: scale(1.1); }
+  #page .game_canvas {
+    width: 1000px;
+    height: 620px; }
 
 /*# sourceMappingURL=main.css.map */

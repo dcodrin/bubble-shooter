@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "webpack --config ./webpack.config.js --watch --progress --colors",
-    "sass": "sass --watch src/_scss:public/_css"
+    "sass": "sass --watch src/_scss:public/_css",
+    "dev-server": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js"
   },
   "author": "Codrin Diaconu",
   "license": "ISC",

@@ -18,5 +18,6 @@ module.exports = {
         contentBase: './public',
         hot: true,
         progress: true
-    }
+    },
+    devtool: 'source-map'
 };

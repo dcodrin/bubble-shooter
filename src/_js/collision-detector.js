@@ -1,5 +1,5 @@
 import jQuery from 'jquery';
-import BubbleShoot from './game.js';
+import BubbleShoot from './BubbleShoot.js';
 
 const CollisionDetector = (function ($) {
     const CollisionDetector = {

@@ -9,7 +9,6 @@ const Kaboom = (function (jQuery) {
     let toMove = [];
     jQuery.fn.kaboom = function (settings) {
         const config = jQuery.extend({}, defaults, settings);
-        console.log(toMove.length);
         if (toMove.length === 0) {
             setTimeout(moveAll, 25);
         }
