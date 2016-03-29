@@ -1,0 +1,31 @@
+@mixin background-position($pixels) {
+  background-position: 0 $pixels;
+}
+
+.bubble {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-image: url('../_img/bubbles_decode.png');
+}
+
+.cur_bubble {
+  left: 360px;
+  top: 470px;
+}
+
+.bubble_0 {
+  @include background-position(0);
+}
+
+.bubble_1 {
+  @include background-position(-50px);
+}
+
+.bubble_2 {
+  @include background-position(-100px);
+}
+
+.bubble_3 {
+  @include background-position(-150px);
+}

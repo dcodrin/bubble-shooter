@@ -1,0 +1,97 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab|Open+Sans:400italic,700italic,400,700);
+.bubble {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-image: url("../_img/bubbles_decode.png"); }
+
+.cur_bubble {
+  left: 360px;
+  top: 470px; }
+
+.bubble_0 {
+  background-position: 0 0; }
+
+.bubble_1 {
+  background-position: 0 -50px; }
+
+.bubble_2 {
+  background-position: 0 -100px; }
+
+.bubble_3 {
+  background-position: 0 -150px; }
+
+body {
+  margin: 0; }
+
+#page {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1000px;
+  height: 738px;
+  font-family: "Roboto Slab", serif; }
+  #page #top_bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1000px;
+    height: 70px;
+    background-color: #369;
+    color: #fff; }
+  #page #game {
+    position: absolute;
+    left: 0;
+    top: 70px;
+    width: 1000px;
+    height: 620px;
+    background-color: #fff;
+    overflow: hidden; }
+    #page #game #board {
+      position: absolute;
+      left: 120px;
+      top: 0;
+      width: 760px;
+      height: 620px; }
+    #page #game #bubbles_remaining {
+      position: absolute;
+      left: 482px;
+      top: 520px;
+      width: 50px;
+      font-size: 2em;
+      font-weight: bold;
+      color: #000;
+      text-align: center; }
+  #page #footer_bar {
+    position: absolute;
+    left: 0;
+    top: 690px;
+    width: 1000px;
+    height: 48px;
+    background-color: #369; }
+  #page .dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    background-color: #369;
+    border-radius: 10px;
+    text-align: center; }
+    #page .dialog h2 {
+      font-size: 2em; }
+  #page .button {
+    width: 100px;
+    margin: 0 auto;
+    color: #fff;
+    border-radius: 10px;
+    line-height: 5em;
+    background-color: #000;
+    transition: all 0.3s ease-in-out; }
+    #page .button:hover {
+      cursor: pointer;
+      background-color: #ba0020;
+      transform: scale(1.1); }
+
+/*# sourceMappingURL=main.css.map */

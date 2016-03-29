@@ -1,0 +1,97 @@
+@import "game";
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab|Open+Sans:400italic,700italic,400,700);
+
+$roboto-slab: 'Roboto Slab', serif;
+$bars-color: #369;
+$primary-text-color: #fff;
+$secondary-text-color: #000;
+$decode-color: #ba0020;
+
+body {
+  margin: 0;
+}
+
+#page {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1000px;
+  height: 738px;
+  font-family: $roboto-slab;
+
+  #top_bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1000px;
+    height: 70px;
+    background-color: $bars-color;
+    color: $primary-text-color;
+  }
+  #game {
+    position: absolute;
+    left: 0;
+    top: 70px;
+    width: 1000px;
+    height: 620px;
+    background-color: $primary-text-color;
+    overflow: hidden;
+    #board {
+      position: absolute;
+      left: 120px;
+      top: 0;
+      width: 760px;
+      height: 620px;
+    }
+    #bubbles_remaining {
+      position: absolute;
+      left: 482px;
+      top: 520px;
+      width: 50px;
+      font-size: 2em;
+      font-weight: bold;
+      color: $secondary-text-color;
+      text-align: center;
+    }
+  }
+  #footer_bar {
+    position: absolute;
+    left: 0;
+    top: 690px;
+    width: 1000px;
+    height: 48px;
+    background-color: $bars-color;
+  }
+
+  .dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    background-color: $bars-color;
+    border-radius: 10px;
+    text-align: center;
+    h2 {
+      font-size: 2em;
+    }
+  }
+  .button {
+    width: 100px;
+    margin: 0 auto;
+    color: $primary-text-color;
+    border-radius: 10px;
+    line-height: 5em;
+    background-color: $secondary-text-color;
+    transition: all 0.3s ease-in-out;
+    &:hover {
+      cursor: pointer;
+      background-color: $decode-color;
+      transform: scale(1.1);
+    }
+  }
+}
+
+
+
