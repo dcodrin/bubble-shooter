@@ -50,30 +50,32 @@ const ui = (function ($) {
                 }
             };
 
-            bubble.getSprite().css(`transition`, `all ${duration / 1000}s linear`);
-            bubble.getSprite().css({
-                left: coords.x - ui.BUBBLE_DIMS / 2,
-                top: coords.y - ui.BUBBLE_DIMS / 2
-            });
-            setTimeout(complete, duration);
+            //CSS Animations
+
+            //bubble.getSprite().css(`transition`, `all ${duration / 1000}s linear`);
+            //bubble.getSprite().css({
+            //    left: coords.x - ui.BUBBLE_DIMS / 2,
+            //    top: coords.y - ui.BUBBLE_DIMS / 2
+            //});
+            //setTimeout(complete, duration);
 
             //JS Animations
 
-            //bubble.getSprite().animate({
-            //    left: coords.x - ui.BUBBLE_DIMS / 2,
-            //    top: coords.y - ui.BUBBLE_DIMS / 2
-            //}, {
-            //    duration: duration,
-            //    easing: 'linear',
-            //    complete: function () {
-            //        if (bubble.getRow() !== null) {
-            //            bubble.getSprite().css({
-            //                left: bubble.getCoords().left - ui.BUBBLE_DIMS / 2,
-            //                top: bubble.getCoords().top - ui.BUBBLE_DIMS / 2
-            //            })
-            //        }
-            //    }
-            //})
+            bubble.getSprite().animate({
+                left: coords.x - ui.BUBBLE_DIMS / 2,
+                top: coords.y - ui.BUBBLE_DIMS / 2
+            }, {
+                duration: duration,
+                easing: 'linear',
+                complete: function () {
+                    if (bubble.getRow() !== null) {
+                        bubble.getSprite().css({
+                            left: bubble.getCoords().left - ui.BUBBLE_DIMS / 2,
+                            top: bubble.getCoords().top - ui.BUBBLE_DIMS / 2
+                        })
+                    }
+                }
+            })
         },
         drawBoard: function (board) {
             const rows = board.getRows(),

@@ -28,6 +28,7 @@ const Sprite = (function ($) {
         this.css = this.setPosition;
 
         this.animate = function (destination, config) {
+            console.log("this was called");
             let
                 duration = config.duration,
                 animationStart = Date.now(),
