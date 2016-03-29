@@ -3,14 +3,14 @@ import jQuery from 'jquery';
 const Kaboom = (function (jQuery) {
 
     const defaults = {
-        gravity: 1.3,
+        gravity: 0.4,
         maxY: 800
     };
     let toMove = [];
     jQuery.fn.kaboom = function (settings) {
         const config = jQuery.extend({}, defaults, settings);
         if (toMove.length === 0) {
-            setTimeout(moveAll, 25);
+            setTimeout(moveAll, 10);
         }
         const
             dx = Math.round(Math.random() * 10) - 5,
@@ -45,7 +45,7 @@ const Kaboom = (function (jQuery) {
             });
             toMove = stillToMove;
             if (toMove.length > 0) {
-                setTimeout(moveAll, 25);
+                setTimeout(moveAll, 10);
             }
         }
 

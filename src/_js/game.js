@@ -60,7 +60,7 @@ BubbleShoot.Game = (function ($) {
             bubbles = board.getBubbles();
             if(BubbleShoot.Renderer){
                 if(!requestAnimationID){
-                    requestAnimationID = setTimeout(renderFrame, 40);
+                    requestAnimationID = setTimeout(renderFrame, 10);
                 }
             } else {
                 BubbleShoot.ui.drawBoard(board);
@@ -173,7 +173,7 @@ BubbleShoot.Game = (function ($) {
                }
             });
             BubbleShoot.Renderer.render(bubbles);
-            requestAnimationID = setTimeout(renderFrame, 40);
+            requestAnimationID = setTimeout(renderFrame, 10);
         }
 
     };

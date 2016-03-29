@@ -136,7 +136,7 @@
 	            bubbles = board.getBubbles();
 	            if (_BubbleShoot2.default.Renderer) {
 	                if (!requestAnimationID) {
-	                    requestAnimationID = setTimeout(renderFrame, 40);
+	                    requestAnimationID = setTimeout(renderFrame, 10);
 	                }
 	            } else {
 	                _BubbleShoot2.default.ui.drawBoard(board);
@@ -247,7 +247,7 @@
 	                }
 	            });
 	            _BubbleShoot2.default.Renderer.render(bubbles);
-	            requestAnimationID = setTimeout(renderFrame, 40);
+	            requestAnimationID = setTimeout(renderFrame, 10);
 	        };
 	    };
 	    return Game;
@@ -10658,14 +10658,14 @@
 	var Kaboom = function (jQuery) {
 	
 	    var defaults = {
-	        gravity: 1.3,
+	        gravity: 0.4,
 	        maxY: 800
 	    };
 	    var toMove = [];
 	    jQuery.fn.kaboom = function (settings) {
 	        var config = jQuery.extend({}, defaults, settings);
 	        if (toMove.length === 0) {
-	            setTimeout(moveAll, 25);
+	            setTimeout(moveAll, 10);
 	        }
 	        var dx = Math.round(Math.random() * 10) - 5,
 	            dy = Math.round(Math.random() * 5) + 5;
@@ -10699,7 +10699,7 @@
 	            });
 	            toMove = stillToMove;
 	            if (toMove.length > 0) {
-	                setTimeout(moveAll, 25);
+	                setTimeout(moveAll, 10);
 	            }
 	        }
 	    };
