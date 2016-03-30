@@ -43,7 +43,7 @@ BubbleShoot.Game = (function ($) {
             score = 0,
             highScore = 0;
         const
-            MAX_BUBBLES = 70,
+            MAX_BUBBLES = 80,
             POINTS_PER_BUBBLE = 50,
             MAX_ROWS = 11;
 
@@ -69,7 +69,16 @@ BubbleShoot.Game = (function ($) {
             $game.append(`<div id="score"><p>${score}</p><span>Score</span></div>`);
             $game.append(`<div id="level"><p>${level}</p><span>Level</span></div>`);
             $game.append(`<div id="highScore"><p>${highScore}</p>High Score</div>`);
-            numBubbles = MAX_BUBBLES - level * 5;
+
+            if(level <= 5){
+                numBubbles = MAX_BUBBLES - level * 5;
+            } else if (level > 5 && level <= 10){
+                numBubbles = MAX_BUBBLES - level * 3;
+            } else if (level > 10 && level <= 15){
+                numBubbles = MAX_BUBBLES - level * 2;
+            } else {
+                numBubbles = 30;
+            }
             BubbleShoot.ui.hideDialog();
             board = new BubbleShoot.Board();
             bubbles = board.getBubbles();
@@ -217,7 +226,7 @@ BubbleShoot.Game = (function ($) {
                             bubble.setState(BubbleShoot.BubbleState.FALLEN);
                         }
                     });
-                    BubbleShoot.Sounds.play('_sounds/pop.wav', Math.random() * 0.5 + 0.5)
+                    BubbleShoot.Sounds.play('_sounds/drop.wav', Math.random() * 0.1 + 0.2)
                 }, delay);
                 delay += 60;
                 //Simple animation example

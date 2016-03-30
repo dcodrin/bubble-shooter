@@ -8,7 +8,6 @@ const ui = (function ($) {
         init: function () {
         },
         endGame: function (hasWon, score) {
-            console.log(score);
             $('#game').unbind('click');
             BubbleShoot.ui.drawBubblesRemaining(0);
             if(hasWon){
