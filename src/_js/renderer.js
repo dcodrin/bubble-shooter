@@ -18,7 +18,7 @@ const Renderer = (function ($) {
             context = canvas.getContext('2d');
 
             spriteSheet = new Image();
-            spriteSheet.src = '_img/bubbles_decode.png';
+            spriteSheet.src = '_img/bubbles.png';
             spriteSheet.onLoad = function () {
                 callback();
             };
@@ -31,15 +31,15 @@ const Renderer = (function ($) {
             $.each(bubbles, function () {
                 const bubble = this;
                 let clip = {
-                        top: bubble.getType() * BUBBLE_IMAGE_DIM,
-                        left: 0
-                    };
-                switch (bubble.getState()){
+                    top: bubble.getType() * BUBBLE_IMAGE_DIM,
+                    left: 0
+                };
+                switch (bubble.getState()) {
                     case BubbleShoot.BubbleState.POPPING:
                         const timeInState = bubble.getTimeInState();
-                        if(timeInState < 80){
+                        if (timeInState < 80) {
                             clip.left = BUBBLE_IMAGE_DIM;
-                        } else if(timeInState < 140){
+                        } else if (timeInState < 140) {
                             clip.left = BUBBLE_IMAGE_DIM * 2;
                         } else {
                             clip.left = BUBBLE_IMAGE_DIM * 3;
@@ -49,6 +49,20 @@ const Renderer = (function ($) {
                         return;
                     case BubbleShoot.BubbleState.FIRED:
                         return;
+                    case BubbleShoot.BubbleState.FALLING:
+                        const timeInStateFall = bubble.getTimeInState();
+                        if (timeInStateFall < 500) {
+                            clip.left = 0;
+                        } else if (timeInStateFall < 600) {
+                            clip.left = BUBBLE_IMAGE_DIM;
+                        } else if (timeInStateFall < 700) {
+                            clip.left = BUBBLE_IMAGE_DIM * 2;
+                        } else if (timeInStateFall < 800) {
+                            clip.left = BUBBLE_IMAGE_DIM * 3;
+                        } else {
+                            return;
+                        }
+                        break;
                     case BubbleShoot.BubbleState.FALLEN:
                         return;
                 }

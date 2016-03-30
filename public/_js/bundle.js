@@ -10188,8 +10188,6 @@
 	                }
 	            };
 	
-	            console.log(bubble.getSprite().animate.name);
-	
 	            if (bubble.getSprite().animate.name === 'canvasAnimate') {
 	                bubble.getSprite().animate({
 	                    left: coords.x - ui.BUBBLE_DIMS / 2,
@@ -10744,7 +10742,7 @@
 	            context = canvas.getContext('2d');
 	
 	            spriteSheet = new Image();
-	            spriteSheet.src = '_img/bubbles_decode.png';
+	            spriteSheet.src = '_img/bubbles.png';
 	            spriteSheet.onLoad = function () {
 	                callback();
 	            };
@@ -10775,6 +10773,20 @@
 	                        return;
 	                    case _BubbleShoot2.default.BubbleState.FIRED:
 	                        return;
+	                    case _BubbleShoot2.default.BubbleState.FALLING:
+	                        var timeInStateFall = bubble.getTimeInState();
+	                        if (timeInStateFall < 500) {
+	                            clip.left = 0;
+	                        } else if (timeInStateFall < 600) {
+	                            clip.left = BUBBLE_IMAGE_DIM;
+	                        } else if (timeInStateFall < 700) {
+	                            clip.left = BUBBLE_IMAGE_DIM * 2;
+	                        } else if (timeInStateFall < 800) {
+	                            clip.left = BUBBLE_IMAGE_DIM * 3;
+	                        } else {
+	                            return;
+	                        }
+	                        break;
 	                    case _BubbleShoot2.default.BubbleState.FALLEN:
 	                        return;
 	                }

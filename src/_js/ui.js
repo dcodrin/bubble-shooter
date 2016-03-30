@@ -50,7 +50,6 @@ const ui = (function ($) {
                 }
             };
 
-            console.log(bubble.getSprite().animate.name);
 
             if(bubble.getSprite().animate.name === 'canvasAnimate'){
                 bubble.getSprite().animate({
