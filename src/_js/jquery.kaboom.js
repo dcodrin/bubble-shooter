@@ -1,5 +1,5 @@
 import jQuery from 'jquery';
-
+import BubbleShoot from './BubbleShoot.js';
 const Kaboom = (function (jQuery) {
 
     const defaults = {
@@ -26,7 +26,6 @@ const Kaboom = (function (jQuery) {
         });
 
         function moveAll() {
-
             const frameProportion = 1;
             let stillToMove = [];
             toMove.forEach(function (bubble) {

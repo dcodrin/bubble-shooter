@@ -31,6 +31,16 @@ body {
   width: 1000px;
   height: 738px;
   font-family: "Roboto Slab", serif; }
+  #page #end_game {
+    display: none; }
+  #page #final_score {
+    margin: 20px auto; }
+  #page #end_game_message span {
+    margin-right: 20px;
+    font-size: 2em; }
+  #page #level_complete, #page #level_failed, #page #new_high_score {
+    font-size: 1.5em;
+    color: #fff; }
   #page #score {
     display: flex;
     flex-direction: column;
@@ -120,6 +130,7 @@ body {
   #page .button {
     width: 100px;
     margin: 0 auto;
+    margin-top: 5px;
     color: #fff;
     border-radius: 10px;
     line-height: 5em;

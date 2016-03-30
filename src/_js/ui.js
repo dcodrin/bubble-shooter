@@ -7,6 +7,20 @@ const ui = (function ($) {
         ROW_HEIGHT: 38,
         init: function () {
         },
+        endGame: function (hasWon, score) {
+            console.log(score);
+            $('#game').unbind('click');
+            BubbleShoot.ui.drawBubblesRemaining(0);
+            if(hasWon){
+                $('.level_complete').show();
+                $('.level_failed').hide();
+            } else {
+                $('.level_complete').hide();
+                $('.level_failed').show();
+            }
+            $('#final_score_value').text(score);
+            $('#end_game').fadeIn(500);
+        },
         drawScore: function (score) {
             $('#score p').text(score);
         },
@@ -55,12 +69,12 @@ const ui = (function ($) {
                     });
                     bubble.setState(BubbleShoot.BubbleState.ON_BOARD);
                 } else {
-                  bubble.setState(BubbleShoot.BubbleState.FIRED);
+                    bubble.setState(BubbleShoot.BubbleState.FIRED);
                 }
             };
 
 
-            if(bubble.getSprite().animate.name === 'canvasAnimate'){
+            if (bubble.getSprite().animate.name === 'canvasAnimate') {
                 bubble.getSprite().animate({
                     left: coords.x - ui.BUBBLE_DIMS / 2,
                     top: coords.y - ui.BUBBLE_DIMS / 2
@@ -85,10 +99,6 @@ const ui = (function ($) {
                 setTimeout(complete, duration);
 
             }
-
-
-
-
 
 
         },

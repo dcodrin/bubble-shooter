@@ -9,12 +9,15 @@ import CollisionDetector from './collision-detector.js';
 import Kaboom from './jquery.kaboom.js';
 import Renderer from './renderer.js';
 import Sprite from './sprite.js';
+import Sounds from './sounds.js';
 
 
 //BubbleShoot.ui is an IIFE that returns an object with multiple methods
 BubbleShoot.ui = ui;
 BubbleShoot.Board = Board;
+BubbleShoot.Sounds = Sounds;
 
+console.log(BubbleShoot.Sounds);
 //BubbleShoot.Bubble returns a constructor Object
 BubbleShoot.Bubble = Bubble;
 
@@ -54,14 +57,18 @@ BubbleShoot.Game = (function ($) {
             } else {
                 $('.btn_start_game').bind('click', startGame);
             }
+            if (window.localStorage && localStorage.getItem('highScore')) {
+                highScore = Number(localStorage.getItem('highScore'));
+            }
+            BubbleShoot.ui.drawHighScore(highScore);
         };
         //startGame is a private method that is available to us through the principle of 'closure'
         const startGame = function () {
             const $game = $('#game');
             $('.btn_start_game').unbind('click');
-            $game.append('<div id="score"><p>0</p><span>Score</span></div>');
-            $game.append('<div id="level"><p>0</p><span>Level</span></div>');
-            $game.append('<div id="highScore"><p>0</p>High Score</div>');
+            $game.append(`<div id="score"><p>${score}</p><span>Score</span></div>`);
+            $game.append(`<div id="level"><p>${level}</p><span>Level</span></div>`);
+            $game.append(`<div id="highScore"><p>${highScore}</p>High Score</div>`);
             numBubbles = MAX_BUBBLES - level * 5;
             BubbleShoot.ui.hideDialog();
             board = new BubbleShoot.Board();
@@ -79,6 +86,33 @@ BubbleShoot.Game = (function ($) {
             BubbleShoot.ui.drawScore(score);
             BubbleShoot.ui.drawLevel(level);
         };
+
+        const endGame = function (hasWon) {
+            if (score > highScore) {
+                highScore = score;
+                $('#new_high_score').show();
+                BubbleShoot.ui.drawHighScore(highScore);
+                if (window.localStorage) {
+                    localStorage.setItem('highScore', highScore);
+                }
+            } else {
+                $('#new_high_score').hide();
+            }
+
+            if (hasWon) {
+                level++;
+            } else {
+                level = 0;
+            }
+            $('.btn_start_game').bind('click', startGame);
+            $('#board .bubble').remove();
+            $('#score').remove();
+            $('#highScore').remove();
+            $('#level').remove();
+            BubbleShoot.ui.endGame(hasWon, score);
+            score = 0;
+        };
+
         const getNextBubble = function () {
             //createBubble returns a new Bubble Object
             //the getSprite() method allows us to reference the DOM object
@@ -112,10 +146,24 @@ BubbleShoot.Game = (function ($) {
             if (collision) {
                 coords = collision.coords;
                 duration = Math.round(duration * collision.distToCollision / distance);
+                setTimeout(function () {
+                    BubbleShoot.Sounds.play('_sounds/touch.wav', Math.random() * 0.5 + 0.5);
+                }, duration);
                 board.addBubble(curBubble, coords);
                 const group = board.getGroup(curBubble, {});
                 if (group.list.length >= 3) {
                     popBubbles(group.list, duration);
+                    const topRow = board.getRows()[0];
+                    let topRowBubbles = [];
+                    topRow.forEach(function (bubble) {
+                        if (bubble) {
+                            topRowBubbles.push(bubble);
+                        }
+                    });
+                    if (topRowBubbles.length <= 5) {
+                        popBubbles(topRowBubbles, duration);
+                        group.list.concat(topRowBubbles);
+                    }
                 }
                 if (group.list.length >= 3) {
                     popBubbles(group.list, duration);
@@ -123,7 +171,12 @@ BubbleShoot.Game = (function ($) {
                         orphans = board.findOrphans(),
                         delay = duration + 200 + 30 * group.list.length;
                     dropBubbles(orphans, delay);
+                    if (group.list.length >= 6) {
+                        setTimeout(function () {
+                            //PLACE SOUNDS FOR MULTIPLE POPS
+                        }, delay)
 
+                    }
                     let popped = [].concat(group.list, orphans),
                         points = popped.length * POINTS_PER_BUBBLE;
                     score += points;
@@ -149,7 +202,7 @@ BubbleShoot.Game = (function ($) {
             } else if (board.isEmpty()) {
                 endGame(true);
             } else {
-                curBubble = getNextBubble();
+                curBubble = getNextBubble(board);
             }
         };
         const dropBubbles = function (bubbles, delay) {
@@ -164,8 +217,9 @@ BubbleShoot.Game = (function ($) {
                             bubble.setState(BubbleShoot.BubbleState.FALLEN);
                         }
                     });
+                    BubbleShoot.Sounds.play('_sounds/pop.wav', Math.random() * 0.5 + 0.5)
                 }, delay);
-
+                delay += 60;
                 //Simple animation example
                 //setTimeout(function () {
                 //    bubble.getSprite().animate({
@@ -182,7 +236,8 @@ BubbleShoot.Game = (function ($) {
                     bubble.animatePop();
                     setTimeout(function () {
                         bubble.setState(BubbleShoot.BubbleState.POPPED);
-                    }, 200)
+                    }, 200);
+                    BubbleShoot.Sounds.play('_sounds/pop.wav', Math.random() * 0.5 + 0.5)
                 }, delay);
                 board.popBubblesAt(this.getRow(), this.getCol());
                 setTimeout(function () {

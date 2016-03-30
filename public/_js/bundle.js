@@ -89,12 +89,18 @@
 	
 	var _sprite2 = _interopRequireDefault(_sprite);
 	
+	var _sounds = __webpack_require__(11);
+	
+	var _sounds2 = _interopRequireDefault(_sounds);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	//BubbleShoot.ui is an IIFE that returns an object with multiple methods
 	_BubbleShoot2.default.ui = _ui2.default;
 	_BubbleShoot2.default.Board = _board2.default;
+	_BubbleShoot2.default.Sounds = _sounds2.default;
 	
+	console.log(_BubbleShoot2.default.Sounds);
 	//BubbleShoot.Bubble returns a constructor Object
 	_BubbleShoot2.default.Bubble = _bubble2.default;
 	
@@ -131,14 +137,18 @@
 	            } else {
 	                $('.btn_start_game').bind('click', startGame);
 	            }
+	            if (window.localStorage && localStorage.getItem('highScore')) {
+	                highScore = Number(localStorage.getItem('highScore'));
+	            }
+	            _BubbleShoot2.default.ui.drawHighScore(highScore);
 	        };
 	        //startGame is a private method that is available to us through the principle of 'closure'
 	        var startGame = function startGame() {
 	            var $game = $('#game');
 	            $('.btn_start_game').unbind('click');
-	            $game.append('<div id="score"><p>0</p><span>Score</span></div>');
-	            $game.append('<div id="level"><p>0</p><span>Level</span></div>');
-	            $game.append('<div id="highScore"><p>0</p>High Score</div>');
+	            $game.append('<div id="score"><p>' + score + '</p><span>Score</span></div>');
+	            $game.append('<div id="level"><p>' + level + '</p><span>Level</span></div>');
+	            $game.append('<div id="highScore"><p>' + highScore + '</p>High Score</div>');
 	            numBubbles = MAX_BUBBLES - level * 5;
 	            _BubbleShoot2.default.ui.hideDialog();
 	            board = new _BubbleShoot2.default.Board();
@@ -156,6 +166,33 @@
 	            _BubbleShoot2.default.ui.drawScore(score);
 	            _BubbleShoot2.default.ui.drawLevel(level);
 	        };
+	
+	        var endGame = function endGame(hasWon) {
+	            if (score > highScore) {
+	                highScore = score;
+	                $('#new_high_score').show();
+	                _BubbleShoot2.default.ui.drawHighScore(highScore);
+	                if (window.localStorage) {
+	                    localStorage.setItem('highScore', highScore);
+	                }
+	            } else {
+	                $('#new_high_score').hide();
+	            }
+	
+	            if (hasWon) {
+	                level++;
+	            } else {
+	                level = 0;
+	            }
+	            $('.btn_start_game').bind('click', startGame);
+	            $('#board .bubble').remove();
+	            $('#score').remove();
+	            $('#highScore').remove();
+	            $('#level').remove();
+	            _BubbleShoot2.default.ui.endGame(hasWon, score);
+	            score = 0;
+	        };
+	
 	        var getNextBubble = function getNextBubble() {
 	            //createBubble returns a new Bubble Object
 	            //the getSprite() method allows us to reference the DOM object
@@ -188,17 +225,37 @@
 	            if (collision) {
 	                coords = collision.coords;
 	                duration = Math.round(duration * collision.distToCollision / distance);
+	                setTimeout(function () {
+	                    _BubbleShoot2.default.Sounds.play('_sounds/touch.wav', Math.random() * 0.5 + 0.5);
+	                }, duration);
 	                board.addBubble(curBubble, coords);
 	                var group = board.getGroup(curBubble, {});
 	                if (group.list.length >= 3) {
-	                    popBubbles(group.list, duration);
+	                    (function () {
+	                        popBubbles(group.list, duration);
+	                        var topRow = board.getRows()[0];
+	                        var topRowBubbles = [];
+	                        topRow.forEach(function (bubble) {
+	                            if (bubble) {
+	                                topRowBubbles.push(bubble);
+	                            }
+	                        });
+	                        if (topRowBubbles.length <= 5) {
+	                            popBubbles(topRowBubbles, duration);
+	                            group.list.concat(topRowBubbles);
+	                        }
+	                    })();
 	                }
 	                if (group.list.length >= 3) {
 	                    popBubbles(group.list, duration);
 	                    var orphans = board.findOrphans(),
 	                        delay = duration + 200 + 30 * group.list.length;
 	                    dropBubbles(orphans, delay);
-	
+	                    if (group.list.length >= 6) {
+	                        setTimeout(function () {
+	                            //PLACE SOUNDS FOR MULTIPLE POPS
+	                        }, delay);
+	                    }
 	                    var popped = [].concat(group.list, orphans),
 	                        points = popped.length * POINTS_PER_BUBBLE;
 	                    score += points;
@@ -224,7 +281,7 @@
 	            } else if (board.isEmpty()) {
 	                endGame(true);
 	            } else {
-	                curBubble = getNextBubble();
+	                curBubble = getNextBubble(board);
 	            }
 	        };
 	        var dropBubbles = function dropBubbles(bubbles, delay) {
@@ -239,8 +296,9 @@
 	                            bubble.setState(_BubbleShoot2.default.BubbleState.FALLEN);
 	                        }
 	                    });
+	                    _BubbleShoot2.default.Sounds.play('_sounds/pop.wav', Math.random() * 0.5 + 0.5);
 	                }, delay);
-	
+	                delay += 60;
 	                //Simple animation example
 	                //setTimeout(function () {
 	                //    bubble.getSprite().animate({
@@ -258,6 +316,7 @@
 	                    setTimeout(function () {
 	                        bubble.setState(_BubbleShoot2.default.BubbleState.POPPED);
 	                    }, 200);
+	                    _BubbleShoot2.default.Sounds.play('_sounds/pop.wav', Math.random() * 0.5 + 0.5);
 	                }, delay);
 	                board.popBubblesAt(this.getRow(), this.getCol());
 	                setTimeout(function () {
@@ -10172,6 +10231,20 @@
 	        BUBBLE_DIMS: 44,
 	        ROW_HEIGHT: 38,
 	        init: function init() {},
+	        endGame: function endGame(hasWon, score) {
+	            console.log(score);
+	            $('#game').unbind('click');
+	            _BubbleShoot2.default.ui.drawBubblesRemaining(0);
+	            if (hasWon) {
+	                $('.level_complete').show();
+	                $('.level_failed').hide();
+	            } else {
+	                $('.level_complete').hide();
+	                $('.level_failed').show();
+	            }
+	            $('#final_score_value').text(score);
+	            $('#end_game').fadeIn(500);
+	        },
 	        drawScore: function drawScore(score) {
 	            $('#score p').text(score);
 	        },
@@ -10691,6 +10764,10 @@
 	
 	var _jquery2 = _interopRequireDefault(_jquery);
 	
+	var _BubbleShoot = __webpack_require__(2);
+	
+	var _BubbleShoot2 = _interopRequireDefault(_BubbleShoot);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var Kaboom = function (jQuery) {
@@ -10718,7 +10795,6 @@
 	        });
 	
 	        function moveAll() {
-	
 	            var frameProportion = 1;
 	            var stillToMove = [];
 	            toMove.forEach(function (bubble) {
@@ -10935,6 +11011,48 @@
 	}(_jquery2.default);
 	
 	exports.default = Sprite;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _BubbleShoot = __webpack_require__(2);
+	
+	var _BubbleShoot2 = _interopRequireDefault(_BubbleShoot);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Sounds = function () {
+	    var soundObjects = [],
+	        i = void 0,
+	        length = 10,
+	        curSoundNum = 0;
+	    for (i = 0; i < length; i += 1) {
+	        soundObjects.push(new Audio());
+	    }
+	
+	    var sounds = {
+	        play: function play(url, volume) {
+	            var sound = soundObjects[curSoundNum];
+	            sound.src = url;
+	            sound.volume = volume;
+	            sound.play();
+	            curSoundNum += 1;
+	            if (curSoundNum >= soundObjects.length) {
+	                curSoundNum = curSoundNum % soundObjects.length;
+	            }
+	        }
+	    };
+	    return sounds;
+	}();
+	
+	exports.default = Sounds;
 
 /***/ }
 /******/ ]);
