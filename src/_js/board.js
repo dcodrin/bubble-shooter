@@ -131,6 +131,10 @@ const Board = (function ($) {
             return orphaned;
         };
 
+        this.isEmpty = function () {
+          return this.getBubbles().length === 0;
+        };
+
         return this;
     };
 

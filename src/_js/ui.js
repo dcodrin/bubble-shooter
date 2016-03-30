@@ -7,6 +7,15 @@ const ui = (function ($) {
         ROW_HEIGHT: 38,
         init: function () {
         },
+        drawScore: function (score) {
+            $('#score p').text(score);
+        },
+        drawHighScore: function (highScore) {
+            $('#highScore p').text(highScore);
+        },
+        drawLevel: function (level) {
+            $('#level p').text(level + 1);
+        },
         hideDialog: function () {
             $('.dialog').fadeOut(300);
         },

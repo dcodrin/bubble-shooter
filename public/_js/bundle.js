@@ -113,8 +113,13 @@
 	            numBubbles = void 0,
 	            coords = void 0,
 	            bubbles = [],
-	            requestAnimationID = void 0;
-	        var MAX_BUBBLES = 50;
+	            requestAnimationID = void 0,
+	            level = 0,
+	            score = 0,
+	            highScore = 0;
+	        var MAX_BUBBLES = 70,
+	            POINTS_PER_BUBBLE = 50,
+	            MAX_ROWS = 11;
 	
 	        //init is a public method
 	        this.init = function () {
@@ -129,8 +134,12 @@
 	        };
 	        //startGame is a private method that is available to us through the principle of 'closure'
 	        var startGame = function startGame() {
+	            var $game = $('#game');
 	            $('.btn_start_game').unbind('click');
-	            numBubbles = MAX_BUBBLES;
+	            $game.append('<div id="score"><p>0</p><span>Score</span></div>');
+	            $game.append('<div id="level"><p>0</p><span>Level</span></div>');
+	            $game.append('<div id="highScore"><p>0</p>High Score</div>');
+	            numBubbles = MAX_BUBBLES - level * 5;
 	            _BubbleShoot2.default.ui.hideDialog();
 	            board = new _BubbleShoot2.default.Board();
 	            bubbles = board.getBubbles();
@@ -143,7 +152,9 @@
 	            }
 	            curBubble = getNextBubble(board);
 	            //clickGameScreen will determine the direction of the shooting bubble.
-	            $('#game').bind('click', clickGameScreen);
+	            $game.bind('click', clickGameScreen);
+	            _BubbleShoot2.default.ui.drawScore(score);
+	            _BubbleShoot2.default.ui.drawLevel(level);
 	        };
 	        var getNextBubble = function getNextBubble() {
 	            //createBubble returns a new Bubble Object
@@ -187,6 +198,14 @@
 	                    var orphans = board.findOrphans(),
 	                        delay = duration + 200 + 30 * group.list.length;
 	                    dropBubbles(orphans, delay);
+	
+	                    var popped = [].concat(group.list, orphans),
+	                        points = popped.length * POINTS_PER_BUBBLE;
+	                    score += points;
+	
+	                    setTimeout(function () {
+	                        _BubbleShoot2.default.ui.drawScore(score);
+	                    }, delay);
 	                }
 	            } else {
 	                var distX = Math.sin(angle) * distance,
@@ -198,7 +217,15 @@
 	                };
 	            }
 	            _BubbleShoot2.default.ui.fireBubble(curBubble, coords, duration);
-	            curBubble = getNextBubble();
+	            if (board.getRows().length > MAX_ROWS) {
+	                endGame(false);
+	            } else if (numBubbles === 0) {
+	                endGame(false);
+	            } else if (board.isEmpty()) {
+	                endGame(true);
+	            } else {
+	                curBubble = getNextBubble();
+	            }
 	        };
 	        var dropBubbles = function dropBubbles(bubbles, delay) {
 	            $.each(bubbles, function () {
@@ -10145,6 +10172,15 @@
 	        BUBBLE_DIMS: 44,
 	        ROW_HEIGHT: 38,
 	        init: function init() {},
+	        drawScore: function drawScore(score) {
+	            $('#score p').text(score);
+	        },
+	        drawHighScore: function drawHighScore(highScore) {
+	            $('#highScore p').text(highScore);
+	        },
+	        drawLevel: function drawLevel(level) {
+	            $('#level p').text(level + 1);
+	        },
 	        hideDialog: function hideDialog() {
 	            $('.dialog').fadeOut(300);
 	        },
@@ -10506,6 +10542,10 @@
 	            return orphaned;
 	        };
 	
+	        this.isEmpty = function () {
+	            return this.getBubbles().length === 0;
+	        };
+	
 	        return this;
 	    };
 	
@@ -10734,9 +10774,10 @@
 	
 	    var Renderer = {
 	        init: function init(callback) {
+	            var $game = $('#game');
 	            canvas = document.createElement('canvas');
 	            $(canvas).addClass('game_canvas');
-	            $('#game').prepend(canvas);
+	            $game.prepend(canvas);
 	            $(canvas).attr('width', $(canvas).width());
 	            $(canvas).attr('height', $(canvas).height());
 	            context = canvas.getContext('2d');

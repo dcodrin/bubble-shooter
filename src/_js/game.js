@@ -11,8 +11,6 @@ import Renderer from './renderer.js';
 import Sprite from './sprite.js';
 
 
-
-
 //BubbleShoot.ui is an IIFE that returns an object with multiple methods
 BubbleShoot.ui = ui;
 BubbleShoot.Board = Board;
@@ -37,8 +35,14 @@ BubbleShoot.Game = (function ($) {
             numBubbles,
             coords,
             bubbles = [],
-            requestAnimationID;
-        const MAX_BUBBLES = 50;
+            requestAnimationID,
+            level = 0,
+            score = 0,
+            highScore = 0;
+        const
+            MAX_BUBBLES = 70,
+            POINTS_PER_BUBBLE = 50,
+            MAX_ROWS = 11;
 
         //init is a public method
         this.init = function () {
@@ -53,13 +57,17 @@ BubbleShoot.Game = (function ($) {
         };
         //startGame is a private method that is available to us through the principle of 'closure'
         const startGame = function () {
+            const $game = $('#game');
             $('.btn_start_game').unbind('click');
-            numBubbles = MAX_BUBBLES;
+            $game.append('<div id="score"><p>0</p><span>Score</span></div>');
+            $game.append('<div id="level"><p>0</p><span>Level</span></div>');
+            $game.append('<div id="highScore"><p>0</p>High Score</div>');
+            numBubbles = MAX_BUBBLES - level * 5;
             BubbleShoot.ui.hideDialog();
             board = new BubbleShoot.Board();
             bubbles = board.getBubbles();
-            if(BubbleShoot.Renderer){
-                if(!requestAnimationID){
+            if (BubbleShoot.Renderer) {
+                if (!requestAnimationID) {
                     requestAnimationID = setTimeout(renderFrame, 10);
                 }
             } else {
@@ -67,7 +75,9 @@ BubbleShoot.Game = (function ($) {
             }
             curBubble = getNextBubble(board);
             //clickGameScreen will determine the direction of the shooting bubble.
-            $('#game').bind('click', clickGameScreen);
+            $game.bind('click', clickGameScreen);
+            BubbleShoot.ui.drawScore(score);
+            BubbleShoot.ui.drawLevel(level);
         };
         const getNextBubble = function () {
             //createBubble returns a new Bubble Object
@@ -113,6 +123,14 @@ BubbleShoot.Game = (function ($) {
                         orphans = board.findOrphans(),
                         delay = duration + 200 + 30 * group.list.length;
                     dropBubbles(orphans, delay);
+
+                    let popped = [].concat(group.list, orphans),
+                        points = popped.length * POINTS_PER_BUBBLE;
+                    score += points;
+
+                    setTimeout(function () {
+                        BubbleShoot.ui.drawScore(score);
+                    }, delay);
                 }
             } else {
                 const distX = Math.sin(angle) * distance,
@@ -124,7 +142,15 @@ BubbleShoot.Game = (function ($) {
                 };
             }
             BubbleShoot.ui.fireBubble(curBubble, coords, duration);
-            curBubble = getNextBubble();
+            if (board.getRows().length > MAX_ROWS) {
+                endGame(false);
+            } else if (numBubbles === 0) {
+                endGame(false);
+            } else if (board.isEmpty()) {
+                endGame(true);
+            } else {
+                curBubble = getNextBubble();
+            }
         };
         const dropBubbles = function (bubbles, delay) {
             $.each(bubbles, function () {
@@ -168,9 +194,9 @@ BubbleShoot.Game = (function ($) {
 
         const renderFrame = function () {
             $.each(bubbles, function () {
-               if(this.getSprite().updateFrame){
-                   this.getSprite().updateFrame();
-               }
+                if (this.getSprite().updateFrame) {
+                    this.getSprite().updateFrame();
+                }
             });
             BubbleShoot.Renderer.render(bubbles);
             requestAnimationID = setTimeout(renderFrame, 10);

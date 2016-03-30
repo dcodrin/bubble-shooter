@@ -10,9 +10,10 @@ const Renderer = (function ($) {
 
     const Renderer = {
         init: function (callback) {
+            const $game = $('#game');
             canvas = document.createElement('canvas');
             $(canvas).addClass('game_canvas');
-            $('#game').prepend(canvas);
+            $game.prepend(canvas);
             $(canvas).attr('width', $(canvas).width());
             $(canvas).attr('height', $(canvas).height());
             context = canvas.getContext('2d');
