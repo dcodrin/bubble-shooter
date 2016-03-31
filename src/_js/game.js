@@ -186,11 +186,18 @@ BubbleShoot.Game = (function ($) {
                         orphans = board.findOrphans(),
                         delay = duration + 200 + 30 * group.list.length;
                     dropBubbles(orphans, delay);
-                    if (group.list.length >= 6) {
+                    if (group.list.length >= 6 && group.list.length < 8) {
                         setTimeout(function () {
-                            //PLACE SOUNDS FOR MULTIPLE POPS
+                            BubbleShoot.Sounds.play('_sounds/holy_cow.mp3', Math.random() * 0.5 + 0.5);
                         }, delay)
-
+                    }else if (group.list.length >= 8 && group.list.length < 10) {
+                        setTimeout(function () {
+                            BubbleShoot.Sounds.play('_sounds/holy_shit.mp3', Math.random() * 0.5 + 0.5);
+                        }, delay)
+                    } else if (group.list.length > 10) {
+                        setTimeout(function () {
+                            BubbleShoot.Sounds.play('_sounds/good.mp3', Math.random() * 0.5 + 0.5);
+                        }, delay)
                     }
                     let popped = [].concat(group.list, orphans),
                         points = popped.length * POINTS_PER_BUBBLE;

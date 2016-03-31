@@ -3,7 +3,7 @@ import BubbleShoot from './BubbleShoot.js';
 const Sounds = (function () {
     let soundObjects = [],
         i,
-        length = 10,
+        length = 30,
         curSoundNum = 0;
     for(i = 0; i < length; i += 1){
         soundObjects.push(new Audio());

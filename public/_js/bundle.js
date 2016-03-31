@@ -262,9 +262,17 @@
 	                    var orphans = board.findOrphans(),
 	                        delay = duration + 200 + 30 * group.list.length;
 	                    dropBubbles(orphans, delay);
-	                    if (group.list.length >= 6) {
+	                    if (group.list.length >= 6 && group.list.length < 8) {
 	                        setTimeout(function () {
-	                            //PLACE SOUNDS FOR MULTIPLE POPS
+	                            _BubbleShoot2.default.Sounds.play('_sounds/holy_cow.mp3', Math.random() * 0.5 + 0.5);
+	                        }, delay);
+	                    } else if (group.list.length >= 8 && group.list.length < 10) {
+	                        setTimeout(function () {
+	                            _BubbleShoot2.default.Sounds.play('_sounds/holy_shit.mp3', Math.random() * 0.5 + 0.5);
+	                        }, delay);
+	                    } else if (group.list.length > 10) {
+	                        setTimeout(function () {
+	                            _BubbleShoot2.default.Sounds.play('_sounds/good.mp3', Math.random() * 0.5 + 0.5);
 	                        }, delay);
 	                    }
 	                    var popped = [].concat(group.list, orphans),
@@ -11043,7 +11051,7 @@
 	var Sounds = function () {
 	    var soundObjects = [],
 	        i = void 0,
-	        length = 10,
+	        length = 30,
 	        curSoundNum = 0;
 	    for (i = 0; i < length; i += 1) {
 	        soundObjects.push(new Audio());
