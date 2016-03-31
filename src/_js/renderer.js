@@ -37,7 +37,8 @@ const Renderer = (function ($) {
                 };
                 switch (bubble.getState()) {
                     case BubbleShoot.BubbleState.POPPING:
-                        const timeInState = bubble.getTimeInState();
+                        console.log("POPPING")
+                        let timeInState = bubble.getTimeInState();
                         if (timeInState < 80) {
                             clip.left = BUBBLE_IMAGE_DIM;
                         } else if (timeInState < 140) {

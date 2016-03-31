@@ -145,6 +145,7 @@
 	        //startGame is a private method that is available to us through the principle of 'closure'
 	        var startGame = function startGame() {
 	            var $game = $('#game');
+	            _BubbleShoot2.default.Sounds.play('_sounds/start.ogg', Math.random() * 0.5 + 0.5);
 	            $('.btn_start_game').unbind('click');
 	            $game.append('<div id="score"><p>' + score + '</p><span>Score</span></div>');
 	            $game.append('<div id="level"><p>' + level + '</p><span>Level</span></div>');
@@ -164,7 +165,7 @@
 	            bubbles = board.getBubbles();
 	            if (_BubbleShoot2.default.Renderer) {
 	                if (!requestAnimationID) {
-	                    requestAnimationID = setTimeout(renderFrame, 10);
+	                    requestAnimationID = setTimeout(renderFrame);
 	                }
 	            } else {
 	                _BubbleShoot2.default.ui.drawBoard(board);
@@ -177,6 +178,7 @@
 	        };
 	
 	        var endGame = function endGame(hasWon) {
+	
 	            if (score > highScore) {
 	                highScore = score;
 	                $('#new_high_score').show();
@@ -192,6 +194,7 @@
 	                level++;
 	            } else {
 	                level = 0;
+	                score = 0;
 	            }
 	            $('.btn_start_game').bind('click', startGame);
 	            $('#board .bubble').remove();
@@ -199,7 +202,6 @@
 	            $('#highScore').remove();
 	            $('#level').remove();
 	            _BubbleShoot2.default.ui.endGame(hasWon, score);
-	            score = 0;
 	        };
 	
 	        var getNextBubble = function getNextBubble() {
@@ -228,7 +230,7 @@
 	            var duration = 1000;
 	
 	            var angle = _BubbleShoot2.default.ui.getBubbleAngle(curBubble.getSprite(), e),
-	                distance = 1000,
+	                distance = 1500,
 	                collision = _BubbleShoot2.default.CollisionDetector.findIntersection(curBubble, board, angle);
 	
 	            if (collision) {
@@ -305,7 +307,7 @@
 	                            bubble.setState(_BubbleShoot2.default.BubbleState.FALLEN);
 	                        }
 	                    });
-	                    _BubbleShoot2.default.Sounds.play('_sounds/drop.wav', Math.random() * 0.1 + 0.2);
+	                    _BubbleShoot2.default.Sounds.play('_sounds/drop.wav', Math.random() * 0.3 + 0.5);
 	                }, delay);
 	                delay += 60;
 	                //Simple animation example
@@ -327,7 +329,7 @@
 	                    }, 200);
 	                    _BubbleShoot2.default.Sounds.play('_sounds/pop.wav', Math.random() * 0.5 + 0.5);
 	                }, delay);
-	                board.popBubblesAt(this.getRow(), this.getCol());
+	                board.popBubblesAt(bubble.getRow(), bubble.getCol());
 	                setTimeout(function () {
 	                    bubble.getSprite().remove();
 	                }, delay + 200);
@@ -336,6 +338,7 @@
 	        };
 	
 	        var renderFrame = function renderFrame() {
+	            console.log("FRAME IS REFRESHING");
 	            $.each(bubbles, function () {
 	                if (this.getSprite().updateFrame) {
 	                    this.getSprite().updateFrame();
@@ -10885,6 +10888,7 @@
 	                };
 	                switch (bubble.getState()) {
 	                    case _BubbleShoot2.default.BubbleState.POPPING:
+	                        console.log("POPPING");
 	                        var timeInState = bubble.getTimeInState();
 	                        if (timeInState < 80) {
 	                            clip.left = BUBBLE_IMAGE_DIM;

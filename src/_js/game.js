@@ -1,3 +1,5 @@
+
+
 import BubbleShoot from './BubbleShoot.js';
 
 
@@ -65,16 +67,17 @@ BubbleShoot.Game = (function ($) {
         //startGame is a private method that is available to us through the principle of 'closure'
         const startGame = function () {
             const $game = $('#game');
+            BubbleShoot.Sounds.play('_sounds/start.ogg', Math.random() * 0.5 + 0.5);
             $('.btn_start_game').unbind('click');
             $game.append(`<div id="score"><p>${score}</p><span>Score</span></div>`);
             $game.append(`<div id="level"><p>${level}</p><span>Level</span></div>`);
             $game.append(`<div id="highScore"><p>${highScore}</p>High Score</div>`);
 
-            if(level <= 5){
+            if (level <= 5) {
                 numBubbles = MAX_BUBBLES - level * 5;
-            } else if (level > 5 && level <= 10){
+            } else if (level > 5 && level <= 10) {
                 numBubbles = MAX_BUBBLES - level * 3;
-            } else if (level > 10 && level <= 15){
+            } else if (level > 10 && level <= 15) {
                 numBubbles = MAX_BUBBLES - level * 2;
             } else {
                 numBubbles = 30;
@@ -84,7 +87,7 @@ BubbleShoot.Game = (function ($) {
             bubbles = board.getBubbles();
             if (BubbleShoot.Renderer) {
                 if (!requestAnimationID) {
-                    requestAnimationID = setTimeout(renderFrame, 10);
+                    requestAnimationID = setTimeout(renderFrame);
                 }
             } else {
                 BubbleShoot.ui.drawBoard(board);
@@ -97,6 +100,7 @@ BubbleShoot.Game = (function ($) {
         };
 
         const endGame = function (hasWon) {
+
             if (score > highScore) {
                 highScore = score;
                 $('#new_high_score').show();
@@ -112,6 +116,7 @@ BubbleShoot.Game = (function ($) {
                 level++;
             } else {
                 level = 0;
+                score = 0;
             }
             $('.btn_start_game').bind('click', startGame);
             $('#board .bubble').remove();
@@ -119,7 +124,7 @@ BubbleShoot.Game = (function ($) {
             $('#highScore').remove();
             $('#level').remove();
             BubbleShoot.ui.endGame(hasWon, score);
-            score = 0;
+
         };
 
         const getNextBubble = function () {
@@ -146,10 +151,11 @@ BubbleShoot.Game = (function ($) {
 
         const clickGameScreen = function (e) {
 
+
             let duration = 1000;
 
             const angle = BubbleShoot.ui.getBubbleAngle(curBubble.getSprite(), e),
-                distance = 1000,
+                distance = 1500,
                 collision = BubbleShoot.CollisionDetector.findIntersection(curBubble, board, angle);
 
             if (collision) {
@@ -226,7 +232,7 @@ BubbleShoot.Game = (function ($) {
                             bubble.setState(BubbleShoot.BubbleState.FALLEN);
                         }
                     });
-                    BubbleShoot.Sounds.play('_sounds/drop.wav', Math.random() * 0.1 + 0.2)
+                    BubbleShoot.Sounds.play('_sounds/drop.wav', Math.random() * 0.3 + 0.5)
                 }, delay);
                 delay += 60;
                 //Simple animation example
@@ -248,7 +254,7 @@ BubbleShoot.Game = (function ($) {
                     }, 200);
                     BubbleShoot.Sounds.play('_sounds/pop.wav', Math.random() * 0.5 + 0.5)
                 }, delay);
-                board.popBubblesAt(this.getRow(), this.getCol());
+                board.popBubblesAt(bubble.getRow(), bubble.getCol());
                 setTimeout(function () {
                     bubble.getSprite().remove();
                 }, delay + 200);
@@ -257,6 +263,7 @@ BubbleShoot.Game = (function ($) {
         };
 
         const renderFrame = function () {
+            console.log("FRAME IS REFRESHING");
             $.each(bubbles, function () {
                 if (this.getSprite().updateFrame) {
                     this.getSprite().updateFrame();
@@ -264,8 +271,7 @@ BubbleShoot.Game = (function ($) {
             });
             BubbleShoot.Renderer.render(bubbles);
             requestAnimationID = setTimeout(renderFrame, 10);
-        }
-
+        };
     };
     return Game;
 })(jQuery);
