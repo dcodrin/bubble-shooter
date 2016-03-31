@@ -146,7 +146,7 @@
 	        //startGame is a private method that is available to us through the principle of 'closure'
 	        var startGame = function startGame() {
 	            var $game = $('#game');
-	            _BubbleShoot2.default.Sounds.play('_sounds/start.ogg', Math.random() * 0.5 + 0.5);
+	            _BubbleShoot2.default.Sounds.play('sounds/start.ogg', Math.random() * 0.5 + 0.5);
 	            $('.btn_start_game').unbind('click');
 	            $game.append('<div id="score"><p>' + score + '</p><span>Score</span></div>');
 	            $game.append('<div id="level"><p>' + level + '</p><span>Level</span></div>');
@@ -191,10 +191,10 @@
 	            }
 	
 	            if (hasWon) {
-	                _BubbleShoot2.default.Sounds.play('_sounds/king.mp3', Math.random() * 0.5 + 0.5);
+	                _BubbleShoot2.default.Sounds.play('sounds/king.mp3', Math.random() * 0.5 + 0.5);
 	                level++;
 	            } else {
-	                _BubbleShoot2.default.Sounds.play('_sounds/game_over.mp3', Math.random() * 0.5 + 0.5);
+	                _BubbleShoot2.default.Sounds.play('sounds/game_over.mp3', Math.random() * 0.5 + 0.5);
 	                level = 0;
 	                score = 0;
 	            }
@@ -229,7 +229,7 @@
 	
 	        var clickGameScreen = function clickGameScreen(e) {
 	
-	            _BubbleShoot2.default.Sounds.play('_sounds/shot.wav', 0.2);
+	            _BubbleShoot2.default.Sounds.play('sounds/shot.wav', 0.2);
 	            var duration = 1000;
 	
 	            var angle = _BubbleShoot2.default.ui.getBubbleAngle(curBubble.getSprite(), e),
@@ -240,7 +240,7 @@
 	                coords = collision.coords;
 	                duration = Math.round(duration * collision.distToCollision / distance);
 	                setTimeout(function () {
-	                    _BubbleShoot2.default.Sounds.play('_sounds/touch.wav', Math.random() * 0.5 + 0.5);
+	                    _BubbleShoot2.default.Sounds.play('sounds/touch.wav', Math.random() * 0.5 + 0.5);
 	                }, duration);
 	                board.addBubble(curBubble, coords);
 	                var group = board.getGroup(curBubble, {});
@@ -267,15 +267,15 @@
 	                    dropBubbles(orphans, delay);
 	                    if (group.list.length >= 7 && group.list.length < 8) {
 	                        setTimeout(function () {
-	                            _BubbleShoot2.default.Sounds.play('_sounds/holy_cow.mp3', Math.random() * 0.5 + 0.5);
+	                            _BubbleShoot2.default.Sounds.play('sounds/holy_cow.mp3', Math.random() * 0.5 + 0.5);
 	                        }, delay);
 	                    } else if (group.list.length >= 8 && group.list.length < 10) {
 	                        setTimeout(function () {
-	                            _BubbleShoot2.default.Sounds.play('_sounds/holy_shit.mp3', Math.random() * 0.5 + 0.5);
+	                            _BubbleShoot2.default.Sounds.play('sounds/holy_shit.mp3', Math.random() * 0.5 + 0.5);
 	                        }, delay);
 	                    } else if (group.list.length > 10) {
 	                        setTimeout(function () {
-	                            _BubbleShoot2.default.Sounds.play('_sounds/good.mp3', Math.random() * 0.5 + 0.5);
+	                            _BubbleShoot2.default.Sounds.play('sounds/good.mp3', Math.random() * 0.5 + 0.5);
 	                        }, delay);
 	                    }
 	                    var popped = [].concat(group.list, orphans),
@@ -318,7 +318,7 @@
 	                            bubble.setState(_BubbleShoot2.default.BubbleState.FALLEN);
 	                        }
 	                    });
-	                    _BubbleShoot2.default.Sounds.play('_sounds/drop.wav', Math.random() * 0.3 + 0.5);
+	                    _BubbleShoot2.default.Sounds.play('sounds/drop.wav', Math.random() * 0.3 + 0.5);
 	                }, delay);
 	                delay += 60;
 	                //Simple animation example
@@ -338,7 +338,7 @@
 	                    setTimeout(function () {
 	                        bubble.setState(_BubbleShoot2.default.BubbleState.POPPED);
 	                    }, 200);
-	                    _BubbleShoot2.default.Sounds.play('_sounds/pop.wav', Math.random() * 0.5 + 0.5);
+	                    _BubbleShoot2.default.Sounds.play('sounds/pop.wav', Math.random() * 0.5 + 0.5);
 	                }, delay);
 	                board.popBubblesAt(bubble.getRow(), bubble.getCol());
 	                setTimeout(function () {
@@ -10881,7 +10881,7 @@
 	            context = canvas.getContext('2d');
 	
 	            spriteSheet = new Image();
-	            spriteSheet.src = '_img/bubbles.png';
+	            spriteSheet.src = 'img/bubbles.png';
 	            spriteSheet.onLoad = function () {
 	                callback();
 	            };
