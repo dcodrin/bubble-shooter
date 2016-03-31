@@ -44,6 +44,7 @@ BubbleShoot.Game = (function ($) {
             level = 0,
             score = 0,
             highScore = 0;
+
         const
             MAX_BUBBLES = 80,
             POINTS_PER_BUBBLE = 50,
@@ -100,7 +101,6 @@ BubbleShoot.Game = (function ($) {
         };
 
         const endGame = function (hasWon) {
-
             if (score > highScore) {
                 highScore = score;
                 $('#new_high_score').show();
@@ -113,8 +113,10 @@ BubbleShoot.Game = (function ($) {
             }
 
             if (hasWon) {
+                BubbleShoot.Sounds.play('_sounds/king.mp3', Math.random() * 0.5 + 0.5)
                 level++;
             } else {
+                BubbleShoot.Sounds.play('_sounds/game_over.mp3', Math.random() * 0.5 + 0.5);
                 level = 0;
                 score = 0;
             }
@@ -151,7 +153,7 @@ BubbleShoot.Game = (function ($) {
 
         const clickGameScreen = function (e) {
 
-
+            BubbleShoot.Sounds.play('_sounds/shot.wav', 0.2);
             let duration = 1000;
 
             const angle = BubbleShoot.ui.getBubbleAngle(curBubble.getSprite(), e),
@@ -186,7 +188,7 @@ BubbleShoot.Game = (function ($) {
                         orphans = board.findOrphans(),
                         delay = duration + 200 + 30 * group.list.length;
                     dropBubbles(orphans, delay);
-                    if (group.list.length >= 6 && group.list.length < 8) {
+                    if (group.list.length >= 7 && group.list.length < 8) {
                         setTimeout(function () {
                             BubbleShoot.Sounds.play('_sounds/holy_cow.mp3', Math.random() * 0.5 + 0.5);
                         }, delay)
@@ -270,7 +272,7 @@ BubbleShoot.Game = (function ($) {
         };
 
         const renderFrame = function () {
-            console.log("FRAME IS REFRESHING");
+            //console.log("FRAME IS REFRESHING");
             $.each(bubbles, function () {
                 if (this.getSprite().updateFrame) {
                     this.getSprite().updateFrame();

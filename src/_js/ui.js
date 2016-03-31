@@ -81,7 +81,7 @@ const ui = (function ($) {
                     duration: duration,
                     easing: 'linear',
                     complete: function () {
-                        if (bubble.getRow() !== null) {
+                        if (bubble.getRow()) {
                             bubble.getSprite().css({
                                 left: bubble.getCoords().left - ui.BUBBLE_DIMS / 2,
                                 top: bubble.getCoords().top - ui.BUBBLE_DIMS / 2

@@ -123,6 +123,7 @@
 	            level = 0,
 	            score = 0,
 	            highScore = 0;
+	
 	        var MAX_BUBBLES = 80,
 	            POINTS_PER_BUBBLE = 50,
 	            MAX_ROWS = 11;
@@ -178,7 +179,6 @@
 	        };
 	
 	        var endGame = function endGame(hasWon) {
-	
 	            if (score > highScore) {
 	                highScore = score;
 	                $('#new_high_score').show();
@@ -191,8 +191,10 @@
 	            }
 	
 	            if (hasWon) {
+	                _BubbleShoot2.default.Sounds.play('_sounds/king.mp3', Math.random() * 0.5 + 0.5);
 	                level++;
 	            } else {
+	                _BubbleShoot2.default.Sounds.play('_sounds/game_over.mp3', Math.random() * 0.5 + 0.5);
 	                level = 0;
 	                score = 0;
 	            }
@@ -227,6 +229,7 @@
 	
 	        var clickGameScreen = function clickGameScreen(e) {
 	
+	            _BubbleShoot2.default.Sounds.play('_sounds/shot.wav', 0.2);
 	            var duration = 1000;
 	
 	            var angle = _BubbleShoot2.default.ui.getBubbleAngle(curBubble.getSprite(), e),
@@ -262,7 +265,7 @@
 	                    var orphans = board.findOrphans(),
 	                        delay = duration + 200 + 30 * group.list.length;
 	                    dropBubbles(orphans, delay);
-	                    if (group.list.length >= 6 && group.list.length < 8) {
+	                    if (group.list.length >= 7 && group.list.length < 8) {
 	                        setTimeout(function () {
 	                            _BubbleShoot2.default.Sounds.play('_sounds/holy_cow.mp3', Math.random() * 0.5 + 0.5);
 	                        }, delay);
@@ -346,7 +349,7 @@
 	        };
 	
 	        var renderFrame = function renderFrame() {
-	            console.log("FRAME IS REFRESHING");
+	            //console.log("FRAME IS REFRESHING");
 	            $.each(bubbles, function () {
 	                if (this.getSprite().updateFrame) {
 	                    this.getSprite().updateFrame();
@@ -10324,7 +10327,7 @@
 	                    duration: duration,
 	                    easing: 'linear',
 	                    complete: function complete() {
-	                        if (bubble.getRow() !== null) {
+	                        if (bubble.getRow()) {
 	                            bubble.getSprite().css({
 	                                left: bubble.getCoords().left - ui.BUBBLE_DIMS / 2,
 	                                top: bubble.getCoords().top - ui.BUBBLE_DIMS / 2
@@ -11051,7 +11054,7 @@
 	var Sounds = function () {
 	    var soundObjects = [],
 	        i = void 0,
-	        length = 30,
+	        length = 100,
 	        curSoundNum = 0;
 	    for (i = 0; i < length; i += 1) {
 	        soundObjects.push(new Audio());
