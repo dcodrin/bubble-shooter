@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bubble Shooter</title>
+    <link rel="stylesheet" href="_css/main.css">
+    <script src="./_js/bundle.js"></script>
+</head>
+<body>
+     <div id="page">
+         <div id="top_bar"></div>
+         <div id="game">
+             <div id="board"></div>
+             <div id="bubbles_remaining"></div>
+         </div>
+         <div id="footer_bar"></div>
+
+         <!--New Game Modal-->
+         <div id="start_game" class="dialog">
+             <div id="start_game_message">
+                 <h2>Start a new game</h2>
+             </div>
+             <div class="btn_start_game button">
+                 New Game
+             </div>
+         </div>
+         <div id="end_game" class="dialog">
+             <div id="end_game_message">
+                 <h2>Game Over</h2>
+                 <div id="final_score">
+                     <span>Final Score:</span>
+                     <span id="final_score_value"></span>
+                 </div>
+                 <div id="new_high_score">New High Score!</div>
+                 <div id="level_failed" class="level_failed">Level Failed!</div>
+                 <div id="level_complete" class="level_complete">Level Complete!</div>
+             </div>
+             <div class="btn_start_game button">
+                 <span class="level_complete">Next Level</span>
+                 <span class="level_failed">New Game</span>
+             </div>
+         </div>
+     </div>
+</body>
+</html>
