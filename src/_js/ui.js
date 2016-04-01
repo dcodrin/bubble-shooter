@@ -10,7 +10,7 @@ const ui = (function ($) {
         endGame: function (hasWon, score) {
             $('#game').unbind('click');
             BubbleShoot.ui.drawBubblesRemaining(0);
-            if(hasWon){
+            if (hasWon) {
                 $('.level_complete').show();
                 $('.level_failed').hide();
             } else {
@@ -43,7 +43,8 @@ const ui = (function ($) {
             return bubbleCoords;
         },
         getBubbleAngle: function (bubble, e) {
-            const mouseCoords = ui.getMouseCoords(e),
+            const
+                mouseCoords = ui.getMouseCoords(e),
                 bubbleCoords = ui.getBubbleCoords(bubble),
                 gameCoords = $('#game').position(),
                 boardLeft = 120;

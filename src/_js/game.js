@@ -43,7 +43,9 @@ BubbleShoot.Game = (function ($) {
             requestAnimationID,
             level = 0,
             score = 0,
-            highScore = 0;
+            highScore = 0,
+            cursorX,
+            cursorY;
 
         const
             MAX_BUBBLES = 80,
@@ -67,8 +69,19 @@ BubbleShoot.Game = (function ($) {
         };
         //startGame is a private method that is available to us through the principle of 'closure'
         const startGame = function () {
+
+
+
             const $game = $('#game');
-            BubbleShoot.Sounds.play('_sounds/start.ogg', Math.random() * 0.5 + 0.5);
+
+            $game.bind("mousemove", function (e) {
+                cursorX = e.offsetX;
+                cursorY = e.offsetY;
+                //console.log(curBubble.getSprite().position());
+            });
+
+
+            BubbleShoot.Sounds.play('sounds/start.ogg', Math.random() * 0.5 + 0.5);
             $('.btn_start_game').unbind('click');
             $game.append(`<div id="score"><p>${score}</p><span>Score</span></div>`);
             $game.append(`<div id="level"><p>${level}</p><span>Level</span></div>`);
@@ -113,10 +126,10 @@ BubbleShoot.Game = (function ($) {
             }
 
             if (hasWon) {
-                BubbleShoot.Sounds.play('_sounds/king.mp3', Math.random() * 0.5 + 0.5)
+                BubbleShoot.Sounds.play('sounds/king.mp3', Math.random() * 0.5 + 0.5)
                 level++;
             } else {
-                BubbleShoot.Sounds.play('_sounds/game_over.mp3', Math.random() * 0.5 + 0.5);
+                BubbleShoot.Sounds.play('sounds/game_over.mp3', Math.random() * 0.5 + 0.5);
                 level = 0;
                 score = 0;
             }
@@ -153,7 +166,7 @@ BubbleShoot.Game = (function ($) {
 
         const clickGameScreen = function (e) {
 
-            BubbleShoot.Sounds.play('_sounds/shot.wav', 0.2);
+            BubbleShoot.Sounds.play('sounds/shot.wav', 0.2);
             let duration = 1000;
 
             const angle = BubbleShoot.ui.getBubbleAngle(curBubble.getSprite(), e),
@@ -164,7 +177,7 @@ BubbleShoot.Game = (function ($) {
                 coords = collision.coords;
                 duration = Math.round(duration * collision.distToCollision / distance);
                 setTimeout(function () {
-                    BubbleShoot.Sounds.play('_sounds/touch.wav', Math.random() * 0.5 + 0.5);
+                    BubbleShoot.Sounds.play('sounds/touch.wav', Math.random() * 0.5 + 0.5);
                 }, duration);
                 board.addBubble(curBubble, coords);
                 const group = board.getGroup(curBubble, {});
@@ -190,15 +203,15 @@ BubbleShoot.Game = (function ($) {
                     dropBubbles(orphans, delay);
                     if (group.list.length >= 7 && group.list.length < 8) {
                         setTimeout(function () {
-                            BubbleShoot.Sounds.play('_sounds/holy_cow.mp3', Math.random() * 0.5 + 0.5);
+                            BubbleShoot.Sounds.play('sounds/holy_cow.mp3', Math.random() * 0.5 + 0.5);
                         }, delay)
                     }else if (group.list.length >= 8 && group.list.length < 10) {
                         setTimeout(function () {
-                            BubbleShoot.Sounds.play('_sounds/holy_shit.mp3', Math.random() * 0.5 + 0.5);
+                            BubbleShoot.Sounds.play('sounds/holy_shit.mp3', Math.random() * 0.5 + 0.5);
                         }, delay)
                     } else if (group.list.length > 10) {
                         setTimeout(function () {
-                            BubbleShoot.Sounds.play('_sounds/good.mp3', Math.random() * 0.5 + 0.5);
+                            BubbleShoot.Sounds.play('sounds/good.mp3', Math.random() * 0.5 + 0.5);
                         }, delay)
                     }
                     let popped = [].concat(group.list, orphans),
@@ -241,7 +254,7 @@ BubbleShoot.Game = (function ($) {
                             bubble.setState(BubbleShoot.BubbleState.FALLEN);
                         }
                     });
-                    BubbleShoot.Sounds.play('_sounds/drop.wav', Math.random() * 0.3 + 0.5)
+                    BubbleShoot.Sounds.play('sounds/drop.wav', Math.random() * 0.3 + 0.5)
                 }, delay);
                 delay += 60;
                 //Simple animation example
@@ -261,7 +274,7 @@ BubbleShoot.Game = (function ($) {
                     setTimeout(function () {
                         bubble.setState(BubbleShoot.BubbleState.POPPED);
                     }, 200);
-                    BubbleShoot.Sounds.play('_sounds/pop.wav', Math.random() * 0.5 + 0.5)
+                    BubbleShoot.Sounds.play('sounds/pop.wav', Math.random() * 0.5 + 0.5)
                 }, delay);
                 board.popBubblesAt(bubble.getRow(), bubble.getCol());
                 setTimeout(function () {
@@ -278,7 +291,12 @@ BubbleShoot.Game = (function ($) {
                     this.getSprite().updateFrame();
                 }
             });
-            BubbleShoot.Renderer.render(bubbles);
+
+            var pos = curBubble.getSprite().position();
+            pos.left += BubbleShoot.ui.BUBBLE_DIMS / 2;
+            pos.top += BubbleShoot.ui.BUBBLE_DIMS / 2;
+            BubbleShoot.Renderer.render(bubbles, {left: cursorX, top: cursorY}, pos);
+            //Change this to requestAnimationFrame, read about it.
             requestAnimationID = setTimeout(renderFrame, 10);
         };
     };

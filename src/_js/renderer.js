@@ -19,16 +19,23 @@ const Renderer = (function ($) {
             context = canvas.getContext('2d');
 
             spriteSheet = new Image();
-            spriteSheet.src = '_img/bubbles.png';
+            spriteSheet.src = 'img/bubbles.png';
             spriteSheet.onLoad = function () {
                 callback();
             };
 
             callback();
         },
-        render: function (bubbles) {
+        render: function (bubbles, cursorPosition, bubbleCenter) {
+
             context.clearRect(0, 0, canvas.width, canvas.height);
             context.translate(120, 0);
+            context.beginPath();
+            context.moveTo(bubbleCenter.left, bubbleCenter.top);
+            context.lineTo(cursorPosition.left, cursorPosition.top);
+            context.stroke();
+
+
             $.each(bubbles, function () {
                 const bubble = this;
                 let clip = {
