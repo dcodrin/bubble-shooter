@@ -1,4 +1,4 @@
 ### DecodeMTL Bubble Shooter
-# Have fun [http://dcodus.github.io/bubble_shooter/](Play Now!)
+# Have fun! [Play Live!](http://dcodus.github.io/bubble_shooter/)
 
 
